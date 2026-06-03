@@ -380,8 +380,8 @@ in
           # Cookies
           "network.cookie.cookieBehavior" = 5;
 
-          # Disable WebRTC IP leaks
-          "media.peerconnection.enabled" = false;
+          # Enable WebRTC support
+          "media.peerconnection.enabled" = true;
 
           # Search Suggestions
           "browser.search.suggest.enabled" = false;

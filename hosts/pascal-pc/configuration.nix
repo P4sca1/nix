@@ -100,6 +100,7 @@ in
     isNormalUser = true;
     description = "Pascal Sthamer";
     extraGroups = [
+      "netbird-personal"
       "networkmanager"
       "wheel"
       "gamemode" # https://wiki.nixos.org/wiki/GameMode
@@ -160,6 +161,14 @@ in
     ];
   };
 
+  services.netbird.clients.personal = {
+    port = 51821;
+    ui.enable = true;
+    openFirewall = true;
+    openInternalFirewall = true;    
+    hardened = true;
+  };
+
   programs.gamemode.enable = true;
 
   programs._1password = {
@@ -199,6 +208,7 @@ in
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     mangohud
+    netbird-ui
     pciutils
     uhk-agent
     vulkan-tools
