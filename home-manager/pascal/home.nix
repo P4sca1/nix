@@ -847,6 +847,9 @@ in
         pkgs.vscode-extensions.jnoortheen.nix-ide
       ];
       userSettings = {
+        "[ansible]" = {
+          "editor.defaultFormatter" = "redhat.vscode-yaml"; 
+        };
         "[yaml]" = {
           "editor.defaultFormatter" = "redhat.vscode-yaml";
         };
