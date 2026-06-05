@@ -2,6 +2,13 @@
   description = "Pascal's nix-darwin system flake";
 
   inputs = {
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+    };
+    import-tree = {
+      url = "github:vic/import-tree";
+    };
+
     nixpkgs = {
       url = "github:NixOS/nixpkgs/nixos-26.05";
     };
@@ -48,116 +55,5 @@
     };
   };
 
-  outputs =
-    {
-      self,
-      nixpkgs,
-      nix-flatpak,
-      nix-darwin,
-      home-manager,
-      nur,
-      ...
-    }@inputs:
-    {
-      darwinConfigurations = {
-        pascal-mbp = nix-darwin.lib.darwinSystem {
-          inherit inputs;
-          system = "x86_64-darwin";
-          modules = [
-            ./hosts/pascal-mbp/configuration.nix
-            inputs.nix-homebrew.darwinModules.nix-homebrew
-            {
-              nix-homebrew = {
-                # Install Homebrew under the default prefix
-                enable = true;
-
-                # Apple Silicon Only: Also install Homebrew under the default Intel prefix for Rosetta 2
-                enableRosetta = false;
-
-                # User owning the Homebrew prefix
-                user = "pascal";
-
-                # Declarative tap management
-                taps = {
-                  "homebrew/homebrew-core" = inputs.homebrew-core;
-                  "homebrew/homebrew-cask" = inputs.homebrew-cask;
-                };
-
-                # Enable fully-declarative tap management
-                #
-                # With mutableTaps disabled, taps can no longer be added imperatively with `brew tap`.
-                mutableTaps = false;
-              };
-            }
-            # Align homebrew taps config with nix-homebrew
-            (
-              { config, ... }:
-              {
-                homebrew.taps = builtins.attrNames config.nix-homebrew.taps;
-              }
-            )
-            home-manager.darwinModules.home-manager
-            nur.modules.darwin.default
-          ];
-        };
-
-        pascal-mbp-procyde = nix-darwin.lib.darwinSystem {
-          inherit inputs;
-          system = "aarch64-darwin";
-          modules = [
-            ./hosts/pascal-mbp-procyde/configuration.nix
-            inputs.nix-homebrew.darwinModules.nix-homebrew
-            {
-              nix-homebrew = {
-                # Install Homebrew under the default prefix
-                enable = true;
-
-                # Apple Silicon Only: Also install Homebrew under the default Intel prefix for Rosetta 2
-                enableRosetta = true;
-
-                # User owning the Homebrew prefix
-                user = "pascal";
-
-                # Declarative tap management
-                taps = {
-                  "homebrew/homebrew-core" = inputs.homebrew-core;
-                  "homebrew/homebrew-cask" = inputs.homebrew-cask;
-                  "robusta-dev/homebrew-holmesgpt" = inputs.homebrew-holmesgpt;
-                };
-
-                # Enable fully-declarative tap management
-                #
-                # With mutableTaps disabled, taps can no longer be added imperatively with `brew tap`.
-                mutableTaps = false;
-              };
-            }
-            # Align homebrew taps config with nix-homebrew
-            (
-              { config, ... }:
-              {
-                homebrew.taps = builtins.attrNames config.nix-homebrew.taps;
-              }
-            )
-            home-manager.darwinModules.home-manager
-            nur.modules.darwin.default
-          ];
-        };
-      };
-
-      nixosConfigurations = {
-        pascal-pc = nixpkgs.lib.nixosSystem {
-          specialArgs = {
-            inherit inputs;
-            hostPlatform = "x86_64-linux";
-          };
-
-          modules = [
-            ./hosts/pascal-pc/configuration.nix
-            home-manager.nixosModules.home-manager
-            nix-flatpak.nixosModules.nix-flatpak
-            nur.modules.nixos.default
-          ];
-        };
-      };
-    };
+  outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);
 }
