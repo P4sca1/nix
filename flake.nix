@@ -8,6 +8,10 @@
     import-tree = {
       url = "github:vic/import-tree";
     };
+    wrapper-modules = {
+      url = "github:BirdeeHub/nix-wrapper-modules";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nixpkgs = {
       url = "github:NixOS/nixpkgs/nixos-26.05";

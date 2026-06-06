@@ -64,6 +64,7 @@
       };
       services.xserver.videoDrivers = [ "nvidia" ];
 
+      hardware.enableRedistributableFirmware = true; # required for Intel Wifi drivers
       hardware.xpadneo.enable = true;
       hardware.keyboard.uhk.enable = true;
       hardware.logitech.wireless.enable = true;

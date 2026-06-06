@@ -7,9 +7,10 @@
     };
 
     modules = [
-      self.nixosModules.home-manager
       self.nixosModules.pascal-pc
       self.nixosModules.pascal-pc-hardware
+      self.nixosModules.home-manager
+      self.nixosModules.niri
       inputs.nix-flatpak.nixosModules.nix-flatpak
       inputs.nur.modules.nixos.default
     ];
@@ -210,6 +211,7 @@
         pciutils
         uhk-agent
         vulkan-tools
+        xwayland-satellite # https://niri-wm.github.io/niri/Xwayland.html
       ];
 
       environment.sessionVariables = {
