@@ -124,7 +124,9 @@
           "drawerEnabled": true,
           "hidePassive": false,
           "id": "Tray",
-          "pinned": []
+          "pinned": [
+            "1Password"
+          ]
         },
         {
           "hideWhenZero": false,
@@ -227,13 +229,28 @@
     "lockScreenBlur": 0,
     "lockScreenTint": 0,
     "keybinds": {
-      "keyUp": ["Up"],
-      "keyDown": ["Down"],
-      "keyLeft": ["Left"],
-      "keyRight": ["Right"],
-      "keyEnter": ["Return", "Enter"],
-      "keyEscape": ["Esc"],
-      "keyRemove": ["Del"]
+      "keyUp": [
+        "Up"
+      ],
+      "keyDown": [
+        "Down"
+      ],
+      "keyLeft": [
+        "Left"
+      ],
+      "keyRight": [
+        "Right"
+      ],
+      "keyEnter": [
+        "Return",
+        "Enter"
+      ],
+      "keyEscape": [
+        "Esc"
+      ],
+      "keyRemove": [
+        "Del"
+      ]
     },
     "reverseScroll": false,
     "smoothScrollEnabled": true
@@ -310,7 +327,7 @@
       "pixelate",
       "honeycomb"
     ],
-    "skipStartupTransition": false,
+    "skipStartupTransition": true,
     "transitionEdgeSmoothness": 0.05,
     "panelPosition": "follow_bar",
     "hideWallpaperFilenames": false,
@@ -590,7 +607,11 @@
     "autoHideMs": 2000,
     "overlayLayer": true,
     "backgroundOpacity": 1,
-    "enabledTypes": [0, 1, 2],
+    "enabledTypes": [
+      0,
+      1,
+      2
+    ],
     "monitors": []
   },
   "audio": {
@@ -622,7 +643,24 @@
     "syncGsettings": true
   },
   "templates": {
-    "activeTemplates": [],
+    "activeTemplates": [
+      {
+        "enabled": true,
+        "id": "helix"
+      },
+      {
+        "enabled": true,
+        "id": "niri"
+      },
+      {
+        "enabled": true,
+        "id": "starship"
+      },
+      {
+        "enabled": true,
+        "id": "yazi"
+      }
+    ],
     "enableUserTheming": false
   },
   "nightLight": {

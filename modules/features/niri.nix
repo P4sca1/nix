@@ -14,50 +14,18 @@
       };
 
       services.displayManager.sddm.enable = true;
-      services.displayManager.sddm.extraPackages =
-        let
-          basePath = "$out/share/sddm/themes/sddm-noctalia-theme";
-          sddmNoctaliaTheme = pkgs.stdenvNoCC.mkDerivation {
-            pname = "sddm-noctalia";
-            version = "0.0.0";
-
-            src = pkgs.fetchFromGitHub {
-              owner = "mahaveergurjar";
-              repo = "sddm";
-              rev = "40012eecd7f8be7ff4c3ae02241e5f58d28f82f6";
-              sha256 = "sha256-e/gYI6znHXxlDCOVh4p265x3kO0nQUU897hCY1yEz88=";
-            };
-
-            dontWrapQtApps = true;
-            propagatedBuildInputs = with pkgs.kdePackages; [
-              # avoid .dev outputs propagation
-              qtsvg.out
-              qtmultimedia.out
-              qtvirtualkeyboard.out
-            ];
-
-            installPhase = ''
-              mkdir -p ${basePath}
-              cp -r $src/* ${basePath}
-            '';
-          };
-        in
-        [ sddmNoctaliaTheme ];
-      services.displayManager.sddm.theme = "sddm-noctalia-theme";
+      services.displayManager.sddm.wayland.enable = true;
+      services.displayManager.sddm.extraPackages = [ pkgs.sddm-astronaut ];
+      services.displayManager.sddm.theme = "sddm-astronaut-theme";
 
       services.displayManager.defaultSession = "niri";
 
-      # Enable the X11 windowing system to support programs such as Steam and some games.
-      services.xserver.enable = true;
-      # Configure keymap in X11
-      services.xserver.xkb = {
-        layout = "eu";
-      };
-
       environment.systemPackages = with pkgs; [
         ddcutil
+        feh
         mission-center
         nautilus
+        sddm-astronaut
         xwayland-satellite # https://niri-wm.github.io/niri/Xwayland.html
       ];
 
@@ -66,7 +34,10 @@
       services.power-profiles-daemon.enable = true;
       services.upower.enable = true;
 
-      security.rtkit.enable = true;
+      xdg.portal = {
+        enable = true;
+        extraPortals = [pkgs.xdg-desktop-portal-gtk]; # Fixes OpenURI and cursor themes in flatpaks
+      };
     };
 
   perSystem =
@@ -84,6 +55,8 @@
             (lib.getExe self'.packages.noctalia)
             "1password --silent"
           ];
+
+          xwayland-satellite.path = lib.getExe pkgs.xwayland-satellite;
 
           window-rule = {
             # Rounded corners for a modern look.
@@ -103,19 +76,21 @@
               repeat-delay = 500;
               repeat-rate = 50;
             };
-
             mouse = {
-              natural-scroll = true;
+              natural-scroll = { };
               accel-speed = 0.0;
               accel-profile = "flat"; # disable pointer acceleration
-              scroll-factor = {
-                vertical = 1.0;
-                horizontal = 1.0;
-              };
+              scroll-factor = 1.0;
             };
           };
 
-          layout.gaps = 5;
+          layout = {
+            gaps = 5;
+            focus-ring = {
+              width = 2;
+              active-color = "#7daea3";
+            };
+          };
 
           binds = {
             # Misc
@@ -124,6 +99,13 @@
             "Control+Mod+Q".spawn-sh = "${lib.getExe self'.packages.noctalia} ipc call lockScreen lock";
             "Mod+Comma".spawn-sh = "${lib.getExe self'.packages.noctalia} ipc call settings toggle";
             "Mod+Q".close-window = { };
+            "Mod+Shift+Slash".show-hotkey-overlay = { };
+            "Shift+Mod+Space".spawn-sh = "1password --quick-access";
+
+            # Screenshots
+            "Print".screenshot = { };
+            "Ctrl+Print".screenshot-screen = { };
+            "Mod+Print".screenshot-window = { };
 
             # Layout / Window management
             "Mod+F".maximize-column = { };
@@ -177,6 +159,8 @@
             "Mod+WheelScrollUp".focus-column-right = { };
             "Mod+Ctrl+WheelScrollDown".focus-workspace-down = { };
             "Mod+Ctrl+WheelScrollUp".focus-workspace-up = { };
+
+            "Ctrl+Up".toggle-overview = { };
 
             # Audio & Brightness
             "XF86AudioRaiseVolume".spawn-sh = "${lib.getExe self'.packages.noctalia} ipc call volume increase";

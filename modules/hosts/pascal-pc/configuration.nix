@@ -190,6 +190,7 @@
           "onepassword-password-manager" # firefox extension
           "steam"
           "steam-unwrapped"
+          "tableplus"
           "uhk-agent"
           "uhk-udev-rules"
         ];
@@ -204,8 +205,10 @@
         mangohud
         netbird-ui
         pciutils
+        tableplus
         uhk-agent
         vulkan-tools
+        inputs.sidra.packages.${pkgs.stdenv.system}.sidra
       ];
 
       environment.sessionVariables = {

@@ -72,6 +72,7 @@
             pnpm
             nodejs
             just
+            yazi
           ];
           linuxPackages = lib.optionals isLinux (
             with pkgs;
@@ -99,9 +100,11 @@
       };
 
       home.pointerCursor = lib.mkIf isLinux {
+        enable = true;
         name = "Bibata-Modern-Classic";
         package = pkgs.bibata-cursors;
         size = 24;
+        x11.enable = true;
       };
 
       home.shellAliases = {
