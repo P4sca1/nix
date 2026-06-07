@@ -56,19 +56,6 @@
         LC_TIME = "de_DE.UTF-8";
       };
 
-      # Enable the X11 windowing system.
-      # You can disable this if you're only using the Wayland session.
-      services.xserver.enable = true;
-
-      # Enable the KDE Plasma Desktop Environment.
-      services.displayManager.sddm.enable = true;
-      services.desktopManager.plasma6.enable = true;
-
-      # Configure keymap in X11
-      services.xserver.xkb = {
-        layout = "eu";
-      };
-
       # Enable CUPS to print documents.
       services.printing.enable = true;
 
@@ -83,6 +70,14 @@
         jack.enable = true;
       };
 
+      fonts.fontconfig.defaultFonts = {
+        monospace = [
+          "JetBrains Mono"
+          "Noto Sans Mono"
+        ];
+        sansSerif = [ "Noto Sans" ];
+        serif = [ "Noto Serif" ];
+      };
       fonts.packages = [
         pkgs.nerd-fonts.jetbrains-mono
       ];
@@ -211,10 +206,10 @@
         pciutils
         uhk-agent
         vulkan-tools
-        xwayland-satellite # https://niri-wm.github.io/niri/Xwayland.html
       ];
 
       environment.sessionVariables = {
+        SSH_AUTH_SOCK = "$HOME/.1password/t/agent.sock";
       };
 
       services.sunshine = {

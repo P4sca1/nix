@@ -98,6 +98,12 @@
         EDITOR = "hx";
       };
 
+      home.pointerCursor = lib.mkIf isLinux {
+        name = "Bibata-Modern-Classic";
+        package = pkgs.bibata-cursors;
+        size = 24;
+      };
+
       home.shellAliases = {
         k = "kubectl";
       };
@@ -457,8 +463,8 @@
           "!.gitignore"
         ];
         settings = {
-          # theme = "papercolor-dark";
-          theme = "papercolor-light";
+          theme = "papercolor-dark";
+          # theme = "papercolor-light";
           # This is not supported by Helix in the current release, but is planned.
           # See https://github.com/helix-editor/helix/pull/14356.
           # theme.light = "papercolor-light";
