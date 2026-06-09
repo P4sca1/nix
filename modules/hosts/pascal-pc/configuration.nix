@@ -126,7 +126,7 @@
       };
 
       programs.gamescope = {
-        enable = false;
+        enable = true;
         package = pkgs.gamescope;
         capSysNice = false;
         args = [
@@ -138,6 +138,7 @@
           "--nested-width 3840"
           "--output-height 1600"
           "--nested-height 1600"
+          "-r 75"
           "--fullscreen"
         ];
       };
