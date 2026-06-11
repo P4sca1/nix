@@ -296,6 +296,11 @@
         package = pkgs.fd;
       };
 
+      programs.chromium = {
+        enable = isLinux;
+        package = pkgs.chromium;
+      };
+
       programs.firefox = {
         enable = isLinux;
         package = pkgs.firefox;

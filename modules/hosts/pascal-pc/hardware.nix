@@ -70,5 +70,6 @@
       hardware.keyboard.uhk.enable = true;
       hardware.logitech.wireless.enable = true;
       hardware.logitech.wireless.enableGraphical = true;
+      hardware.i2c.enable = true;
     };
 }

@@ -167,9 +167,9 @@
             "XF86AudioLowerVolume".spawn-sh = "${lib.getExe self'.packages.noctalia} ipc call volume decrease";
             "XF86AudioMute".spawn-sh = "${lib.getExe self'.packages.noctalia} ipc call volume muteOutput";
             "XF86MonBrightnessUp".spawn-sh =
-              "${lib.getExe self'.packages.noctalia} ipc call brightness increase";
+              "${lib.getExe pkgs.ddcutil} setvcp 10 + 5";
             "XF86MonBrightnessDown".spawn-sh =
-              "${lib.getExe self'.packages.noctalia} ipc call brightness decrease";
+              "${lib.getExe pkgs.ddcutil} setvcp 10 - 5";
           };
         };
       };

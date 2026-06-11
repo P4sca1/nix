@@ -31,7 +31,6 @@
 
       boot.kernelModules = [
         # ntsync is a kernel driver that mimics Windows synchronization mechanisms, significantly improving performance
-
         # for running Windows applications, especially games, through compatibility layers like Wine and Proton
         "ntsync"
       ];
@@ -98,6 +97,7 @@
           "networkmanager"
           "wheel"
           "gamemode" # https://wiki.nixos.org/wiki/GameMode
+          "i2c" # https://www.ddcutil.com/i2c_permissions_using_group_i2c/
           "input"
         ];
         shell = pkgs.zsh;
@@ -203,6 +203,8 @@
       # List packages installed in system profile. To search, run:
       # $ nix search wget
       environment.systemPackages = with pkgs; [
+        ddcutil
+        ddcui
         mangohud
         netbird-ui
         pciutils
