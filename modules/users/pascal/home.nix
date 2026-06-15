@@ -860,6 +860,7 @@
             pkgs.vscode-extensions.github.vscode-github-actions
             pkgs.vscode-extensions.jnoortheen.nix-ide
             pkgs.vscode-extensions.ms-python.python
+            pkgs.vscode-extensions.ms-python.vscode-python-envs
           ];
           userSettings = {
             "[ansible]" = {
