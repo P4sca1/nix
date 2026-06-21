@@ -217,6 +217,9 @@
 
       environment.sessionVariables = {
         SSH_AUTH_SOCK = "$HOME/.1password/t/agent.sock";
+        # Required for XBOX Wireless Controller support in Steam
+        # https://github.com/atar-axis/xpadneo/issues/580
+        SDL_JOYSTICK_HIDAPI = "0";
       };
 
       services.sunshine = {
