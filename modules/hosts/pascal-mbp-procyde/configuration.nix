@@ -102,11 +102,11 @@
               "monitorcontrol"
               "element"
             ];
-            # masApps = {
-            #   "1Password for Safari" = 1569813296;
-            #   "Yubico Authenticator" = 1497506650;
-            #   "Magnet" = 441258766;
-            # };
+            masApps = {
+              "1Password for Safari" = 1569813296;
+              "Yubico Authenticator" = 1497506650;
+              "Magnet" = 441258766;
+            };
           };
         }
       )
@@ -133,6 +133,12 @@
           #
           # With mutableTaps disabled, taps can no longer be added imperatively with `brew tap`.
           mutableTaps = false;
+
+          trust = {
+            # Note: The trust entries are _not_ removed if you remove them from those lists!
+            # Use the `brew untrust` command to remove a trust entry.
+            formulae = [ "robusta-dev/holmesgpt/holmesgpt" ];
+          };
         };
       }
       # Align homebrew taps config with nix-homebrew

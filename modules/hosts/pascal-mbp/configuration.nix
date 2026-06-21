@@ -90,11 +90,11 @@
               "monitorcontrol"
               "element"
             ];
-            # masApps = {
-            #   "1Password for Safari" = 1569813296;
-            #   "Yubico Authenticator" = 1497506650;
-            #   "Magnet" = 441258766;
-            # };
+            masApps = {
+              "1Password for Safari" = 1569813296;
+              "Yubico Authenticator" = 1497506650;
+              "Magnet" = 441258766;
+            };
           };
         }
       )
