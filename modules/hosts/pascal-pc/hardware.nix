@@ -68,6 +68,7 @@
       hardware.uinput.enable = true;
       hardware.bluetooth.enable = true;
       hardware.xpadneo.enable = true;
+      hardware.steam-hardware.enable = true;
       hardware.keyboard.uhk.enable = true;
       hardware.logitech.wireless.enable = true;
       hardware.logitech.wireless.enableGraphical = true;
