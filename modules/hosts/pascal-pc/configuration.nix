@@ -208,6 +208,7 @@
         mangohud
         netbird-ui
         pciutils
+        pulseaudio # Steam requires pactl
         tableplus
         uhk-agent
         vulkan-tools

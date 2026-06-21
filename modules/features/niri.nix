@@ -131,7 +131,7 @@
           outputs = {
             "DP-1" = {
               focus-at-startup = { };
-              mode = "3980x1600@75";
+              mode = "3840x1600@75";
             };
             "HDMI-A-1" = {
               off = { };
