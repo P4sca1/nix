@@ -20,14 +20,50 @@
 
       services.displayManager.defaultSession = "niri";
 
-      environment.systemPackages = with pkgs; [
-        ddcutil
-        feh
-        mission-center
-        nautilus
-        sddm-astronaut
-        xwayland-satellite # https://niri-wm.github.io/niri/Xwayland.html
-      ];
+      environment.systemPackages =
+        let
+          displayMode = pkgs.writeShellScriptBin "display-mode" ''
+            set -euo pipefail
+
+            TV="HDMI-A-1"
+            DESKTOP="DP-1"
+
+            case "''${1:-}" in
+              desktop)
+                niri msg output "$TV" off
+                niri msg output "$DESKTOP" on
+                ;;
+
+              tv-gaming)
+                niri msg output "$DESKTOP" off
+                niri msg output "$TV" on
+
+                sleep 1
+
+                steam steam://open/bigpicture
+                ;;
+
+              extended)
+                niri msg output "$DESKTOP" on
+                niri msg output "$TV" on
+                ;;
+
+              *)
+                echo "Usage: display-mode {desktop|tv-gaming|extended}"
+                exit 1
+                ;;
+            esac
+          '';
+        in
+        [
+          pkgs.ddcutil
+          pkgs.feh
+          pkgs.mission-center
+          pkgs.nautilus
+          pkgs.sddm-astronaut
+          pkgs.xwayland-satellite # https://niri-wm.github.io/niri/Xwayland.html
+          displayMode
+        ];
 
       # https://docs.noctalia.dev/v4/getting-started/nixos/
       security.polkit.enable = true;
@@ -36,7 +72,7 @@
 
       xdg.portal = {
         enable = true;
-        extraPortals = [pkgs.xdg-desktop-portal-gtk]; # Fixes OpenURI and cursor themes in flatpaks
+        extraPortals = [ pkgs.xdg-desktop-portal-gtk ]; # Fixes OpenURI and cursor themes in flatpaks
       };
     };
 
@@ -89,6 +125,17 @@
             focus-ring = {
               width = 2;
               active-color = "#7daea3";
+            };
+          };
+
+          outputs = {
+            "DP-1" = {
+              focus-at-startup = { };
+              mode = "3980x1600@75";
+            };
+            "HDMI-A-1" = {
+              off = { };
+              mode = "1920x1080@60";
             };
           };
 
@@ -166,10 +213,8 @@
             "XF86AudioRaiseVolume".spawn-sh = "${lib.getExe self'.packages.noctalia} ipc call volume increase";
             "XF86AudioLowerVolume".spawn-sh = "${lib.getExe self'.packages.noctalia} ipc call volume decrease";
             "XF86AudioMute".spawn-sh = "${lib.getExe self'.packages.noctalia} ipc call volume muteOutput";
-            "XF86MonBrightnessUp".spawn-sh =
-              "${lib.getExe pkgs.ddcutil} setvcp 10 + 5";
-            "XF86MonBrightnessDown".spawn-sh =
-              "${lib.getExe pkgs.ddcutil} setvcp 10 - 5";
+            "XF86MonBrightnessUp".spawn-sh = "${lib.getExe pkgs.ddcutil} setvcp 10 + 5";
+            "XF86MonBrightnessDown".spawn-sh = "${lib.getExe pkgs.ddcutil} setvcp 10 - 5";
           };
         };
       };
