@@ -17,10 +17,7 @@
   };
 
   flake.nixosModules.pascal-pc =
-    {
-      pkgs,
-      ...
-    }:
+    { pkgs, ... }:
     {
       # Bootloader.
       boot.loader.systemd-boot.enable = true;
@@ -99,6 +96,7 @@
           "gamemode" # https://wiki.nixos.org/wiki/GameMode
           "i2c" # https://www.ddcutil.com/i2c_permissions_using_group_i2c/
           "input"
+          "kvm" # required by docker-sbx for VM sandboxing
         ];
         shell = pkgs.zsh;
         home = "/home/pascal";
@@ -205,6 +203,7 @@
       environment.systemPackages = with pkgs; [
         ddcutil
         ddcui
+        inputs.self.packages.${pkgs.stdenv.system}.docker-sbx
         mangohud
         netbird-ui
         pciutils

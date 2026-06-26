@@ -68,6 +68,7 @@
             glow
             jsonnet
             jsonnet-bundler
+            jq
             yq
             pnpm
             nodejs
