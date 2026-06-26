@@ -13,6 +13,8 @@
       self.nixosModules.niri
       inputs.nix-flatpak.nixosModules.nix-flatpak
       inputs.nur.modules.nixos.default
+      self.nixosModules.sops
+      self.nixosModules.hermes-agent
     ];
   };
 
@@ -97,6 +99,7 @@
           "i2c" # https://www.ddcutil.com/i2c_permissions_using_group_i2c/
           "input"
           "kvm" # required by docker-sbx for VM sandboxing
+          "docker" # allow access to docker daemon
         ];
         shell = pkgs.zsh;
         home = "/home/pascal";
