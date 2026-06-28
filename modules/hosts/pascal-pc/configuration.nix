@@ -20,6 +20,9 @@
 
   flake.nixosModules.pascal-pc =
     { pkgs, ... }:
+    let
+      pkgsUnstable = import inputs.nixpkgs-unstable { system = pkgs.stdenv.hostPlatform.system; };
+    in
     {
       # Bootloader.
       boot.loader.systemd-boot.enable = true;
@@ -157,12 +160,15 @@
         ];
       };
 
+      # nixos-26.05 ships netbird 0.71.4, but we need a more recent version for the kubernetes integration
+      services.netbird.package = pkgsUnstable.netbird;
       services.netbird.clients.personal = {
         port = 51821;
         ui.enable = false;
         openFirewall = true;
         openInternalFirewall = true;
         hardened = true;
+        autoStart = true;
       };
 
       programs.gamemode.enable = true;
