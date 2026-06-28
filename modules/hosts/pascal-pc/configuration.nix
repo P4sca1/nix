@@ -159,7 +159,7 @@
 
       services.netbird.clients.personal = {
         port = 51821;
-        ui.enable = true;
+        ui.enable = false;
         openFirewall = true;
         openInternalFirewall = true;
         hardened = true;
@@ -208,7 +208,6 @@
         ddcui
         inputs.self.packages.${pkgs.stdenv.system}.docker-sbx
         mangohud
-        netbird-ui
         pciutils
         pulseaudio # Steam requires pactl
         tableplus
