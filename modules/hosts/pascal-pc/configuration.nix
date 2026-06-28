@@ -170,7 +170,9 @@
         hardened = true;
         autoStart = true;
       };
-
+      # Support netbird client-side DNS resolution
+      services.resolved.enable = true;
+ 
       programs.gamemode.enable = true;
 
       programs._1password = {
