@@ -42,6 +42,11 @@
       networking.networkmanager.enable = true;
       networking.nftables.enable = true;
 
+      # Configure DNS
+      networking.nameservers = ["192.168.178.1"]; # Fritz Box which routes to AdGuard Home
+      # netbird requires resolved
+      services.resolved.enable = true;
+
       time.timeZone = "Europe/Berlin";
 
       i18n.defaultLocale = "de_DE.UTF-8";
@@ -170,8 +175,6 @@
         hardened = true;
         autoStart = true;
       };
-      # Support netbird client-side DNS resolution
-      services.resolved.enable = true;
  
       programs.gamemode.enable = true;
 
