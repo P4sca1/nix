@@ -15,6 +15,7 @@
       inputs.nur.modules.nixos.default
       self.nixosModules.sops
       self.nixosModules.hermes-agent
+      self.nixosModules.herdr
     ];
   };
 
@@ -43,7 +44,7 @@
       networking.nftables.enable = true;
 
       # Configure DNS
-      networking.nameservers = ["192.168.178.1"]; # Fritz Box which routes to AdGuard Home
+      networking.nameservers = [ "192.168.178.1" ]; # Fritz Box which routes to AdGuard Home
       # netbird requires resolved
       services.resolved.enable = true;
 
@@ -175,7 +176,7 @@
         hardened = true;
         autoStart = true;
       };
- 
+
       programs.gamemode.enable = true;
 
       programs._1password = {
