@@ -64,6 +64,7 @@
 
             # CLI utilities
             gh
+            github-copilot-cli
             gitui
             glow
             jsonnet
@@ -130,6 +131,41 @@
       home.stateVersion = "25.11";
 
       xdg.enable = true;
+      xdg.configFile."herdr/config.toml".text = ''
+        onboarding = false
+
+        [theme]
+        name = "catppuccin"
+
+        auto_switch = true
+        dark_name = "catppuccin"
+        light_name = "catppuccin-latte"
+
+        [terminal]
+        new_cwd = "follow"
+
+        [update]
+        version_check = false
+        manifest_check = false
+
+        [keys]
+        prefix = "ctrl+a"
+        split_vertical = "prefix+|"
+        split_horizontal = "prefix+minus"
+
+        [worktrees]
+        directory = "~/.herdr/worktrees"
+
+        [remote]
+        manage_ssh_config = false
+
+        [ui.toast]
+        delivery = "terminal"
+        delay_seconds = 1
+
+        [advanced]
+        scrollback_limit_bytes = 10000000
+      '';
 
       accounts.email.accounts = {
         "pascal@sthamer.xyz" = {
@@ -408,6 +444,17 @@
               "browser.profiles.enabled" = false;
             };
           };
+        };
+      };
+
+      programs.ghostty = {
+        enable = true;
+        package = pkgs.ghostty;
+        systemd.enable = isLinux;
+        installBatSyntax = true;
+        settings = {
+          font-size = 18;
+          theme = "dark:Catppuccin Mocha,light:Catppuccin Latte";
         };
       };
 
@@ -725,21 +772,18 @@
               ForwardAgent = false;
               AddKeysToAgent = "no";
               Compression = false;
-              ServerAliveInterval = 0;
-              ServerAliveCountMax = 3;
+              ServerAliveInterval = 15;
+              ServerAliveCountMax = 4;
               HashKnownHosts = false;
               UserKnownHostsFile = "~/.ssh/known_hosts";
               ControlMaster = "no";
               ControlPersist = "no";
               IdentityAgent = opagent;
             };
-            "*.teleport.*.*" = {
-              IdentityAgent = "none";
-            };
             "*.ips-hosting.com" = {
               User = "ips-hosting";
             };
-            "bwi-hetzner-dev" = {
+            "z-dev" = {
               User = "ubuntu";
               Hostname = "168.119.73.177";
               Port = 2221;
