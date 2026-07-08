@@ -106,6 +106,8 @@
               "1Password for Safari" = 1569813296;
               "Yubico Authenticator" = 1497506650;
               "Magnet" = 441258766;
+              "WireGuard" = 1451685025;
+              "Portal - Escape Into Nature" = 1436994560;
             };
           };
         }
