@@ -15,7 +15,6 @@
       inputs.nur.modules.nixos.default
       self.nixosModules.sops
       self.nixosModules.hermes-agent
-      self.nixosModules.herdr
     ];
   };
 

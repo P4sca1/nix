@@ -1,4 +1,5 @@
 {
+  inputs,
   lib,
   ...
 }:
@@ -75,6 +76,7 @@
             nodejs
             just
             yazi
+            inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.herdr
           ];
           linuxPackages = lib.optionals isLinux (
             with pkgs;
@@ -448,7 +450,7 @@
       };
 
       programs.ghostty = {
-        enable = true;
+        enable = isLinux;
         package = pkgs.ghostty;
         systemd.enable = isLinux;
         installBatSyntax = true;
