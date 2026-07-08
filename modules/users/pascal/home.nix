@@ -154,6 +154,7 @@
         prefix = "ctrl+a"
         split_vertical = "prefix+|"
         split_horizontal = "prefix+minus"
+        rename_tab = "prefix+,"
 
         [worktrees]
         directory = "~/.herdr/worktrees"
@@ -723,6 +724,18 @@
               models = {
                 "PIA-1" = {
                   name = "PIA-1";
+                  reasoning = true;
+                  interleaved = {
+                    field = "reasoning_content";
+                  };
+                  variants = {
+                    low = {
+                      reasoningEffort = "low";
+                    };
+                    high = {
+                      reasoningEffort = "high";
+                    };
+                  };
                 };
               };
             };
