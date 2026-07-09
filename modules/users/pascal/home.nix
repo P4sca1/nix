@@ -58,9 +58,12 @@
             hcloud
             kubelogin-oidc
             kubectl
+            kubectl-cnpg
+            kubectl-ktop
+            kubectl-tree
+            kubectx
             kubernetes-helm
             kubespy
-            kubeswitch
             manifest-tool
             minio-client
             regclient
