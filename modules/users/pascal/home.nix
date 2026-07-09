@@ -56,8 +56,9 @@
             trivy
             dive
             hcloud
-            kubernetes-helm
+            kubelogin-oidc
             kubectl
+            kubernetes-helm
             kubespy
             manifest-tool
             minio-client
