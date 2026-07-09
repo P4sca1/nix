@@ -60,6 +60,7 @@
             kubectl
             kubernetes-helm
             kubespy
+            kubeswitch
             manifest-tool
             minio-client
             regclient
