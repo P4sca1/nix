@@ -52,6 +52,7 @@
 
             # Kubernetes / Cloud / Containers
             cilium-cli
+            clusterctl
             istioctl
             trivy
             dive
@@ -907,7 +908,7 @@
       programs.vscodium = {
         enable = true;
         package = pkgs.vscodium;
-        mutableExtensionsDir = false;
+        mutableExtensionsDir = true; # There are extensions like antfu.iconify that are not available via nix
         profiles.default = {
           enableUpdateCheck = false;
           extensions = [
@@ -926,6 +927,8 @@
             pkgs.vscode-extensions.jnoortheen.nix-ide
             pkgs.vscode-extensions.ms-python.python
             pkgs.vscode-extensions.ms-python.vscode-python-envs
+            pkgs.vscode-extensions.bradlc.vscode-tailwindcss
+            pkgs.vscode-extensions.oxc.oxc-vscode
           ];
           userSettings = {
             "[ansible]" = {
