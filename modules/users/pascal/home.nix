@@ -73,6 +73,7 @@
             gh
             github-copilot-cli
             gitui
+            glab
             glow
             jsonnet
             jsonnet-bundler
@@ -97,8 +98,14 @@
               slack
             ]
           );
+          darwinArmPackages = lib.optionals (pkgs.stdenv.system == "aarch64-darwin") (
+            with pkgs;
+            [
+              docker-sbx
+            ]
+          );
         in
-        sharedPackages ++ linuxPackages ++ darwinPackages;
+        sharedPackages ++ linuxPackages ++ darwinPackages ++ darwinArmPackages;
 
       home.sessionPath = [
         # Ensure all editor tooling is in PATH, so that vscodium can access language servers and other tooling.
@@ -775,23 +782,25 @@
             nixos_nix = "allow";
           };
 
-          plugin = let
-            ponytail = pkgs.fetchFromGitHub {
-              owner = "DietrichGebert";
-              repo = "ponytail";
-              rev = "v4.9.0";
-              sha256 = "sha256-8cYggVltBAlZ/Zj4pl1bOu7mQdZFXCmDGW4RSpvRA+w=";
-            };
-            superpowers = pkgs.fetchFromGitHub {
-              owner = "obra";
-              repo = "superpowers";
-              rev = "v6.2.0";
-              sha256 = "sha256-F5LEk0yNWbMpan1vZSFZM76XSpsFGvA7h8q6Idrvenk=";
-            };
-          in [
-            "${ponytail}/.opencode/plugins/ponytail.mjs"
-            "${superpowers}/.opencode/plugins/superpowers.js"
-          ];
+          plugin =
+            let
+              ponytail = pkgs.fetchFromGitHub {
+                owner = "DietrichGebert";
+                repo = "ponytail";
+                rev = "v4.9.0";
+                sha256 = "sha256-8cYggVltBAlZ/Zj4pl1bOu7mQdZFXCmDGW4RSpvRA+w=";
+              };
+              superpowers = pkgs.fetchFromGitHub {
+                owner = "obra";
+                repo = "superpowers";
+                rev = "v6.2.0";
+                sha256 = "sha256-F5LEk0yNWbMpan1vZSFZM76XSpsFGvA7h8q6Idrvenk=";
+              };
+            in
+            [
+              "${ponytail}/.opencode/plugins/ponytail.mjs"
+              "${superpowers}/.opencode/plugins/superpowers.js"
+            ];
         };
       };
 

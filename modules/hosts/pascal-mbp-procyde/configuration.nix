@@ -14,9 +14,9 @@
           allowUnfreePredicate =
             pkg:
             builtins.elem (pkgs.lib.getName pkg) [
+              "docker-sbx"
               "github-copilot-cli"
               "slack"
-              "orbstack"
               "onepassword-password-manager" # firefox extension
             ];
         in
@@ -25,7 +25,6 @@
           # $ nix-env -qaP | grep wget
           environment.systemPackages = [
             pkgs.wireshark
-            pkgs.orbstack
           ];
 
           environment.variables = {
@@ -135,7 +134,7 @@
           # Enable fully-declarative tap management
           #
           # With mutableTaps disabled, taps can no longer be added imperatively with `brew tap`.
-          mutableTaps = true;
+          mutableTaps = false;
 
           trust = {
             # Note: The trust entries are _not_ removed if you remove them from those lists!
