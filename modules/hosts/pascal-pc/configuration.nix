@@ -219,6 +219,7 @@
         ddcutil
         ddcui
         inputs.self.packages.${pkgs.stdenv.system}.docker-sbx
+        lutris
         mangohud
         pciutils
         pulseaudio # Steam requires pactl
