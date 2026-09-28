@@ -92,6 +92,7 @@
       nix.settings.experimental-features = "nix-command flakes";
       nix.settings.trusted-users = [ "pascal" ];
       nix.gc.automatic = true;
+      nix.gc.options = "--delete-older-than 30d";
 
       home-manager.users.pascal = self.homeModules.pascal;
 
