@@ -276,6 +276,8 @@
         packages = [
           "com.teamspeak.TeamSpeak3"
         ];
+        # keep runtimes/GL extensions (incl. NVIDIA) in sync with the host driver on rebuild
+        update.onActivation = true;
       };
 
       # Open ports in the firewall.
