@@ -7,6 +7,10 @@
   flake.homeModules.pascal =
     { pkgs, config, ... }:
     let
+      pkgsUnstable = import inputs.nixpkgs-unstable {
+        system = pkgs.stdenv.hostPlatform.system;
+        config = pkgs.config;
+      };
       isDarwin = pkgs.stdenv.isDarwin;
       isLinux = pkgs.stdenv.isLinux;
 
@@ -509,7 +513,7 @@
         signing = {
           format = "ssh";
           key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPyuj6++UcmsipUhtY256OMnj7O+N+26/vA7D57VrnRl";
-          signByDefault = true;
+          signByDefault = false; # signing tags by default makes it harder to push lightweight tags
         };
         includes = [
           {
@@ -723,7 +727,7 @@
       programs.opencode = {
         enable = true;
         enableMcpIntegration = true;
-        package = pkgs.opencode;
+        package = pkgsUnstable.opencode;
         settings = {
           # Add the procyde provider.
           provider = {
@@ -761,26 +765,26 @@
           share = "disabled";
 
           # Configure default permissions for OpenCode
-          permission = {
-            "*" = "ask";
-            read = {
-              "*" = "allow";
-              "*.env*" = "deny";
-            };
-            edit = "allow";
-            glob = "allow";
-            grep = "allow";
-            list = "allow";
-            bash = {
-              "*" = "ask";
-              op = "deny";
-            };
-            todoread = "allow";
-            todowrite = "allow";
-            external_directory = "deny";
-            doom_loop = "deny";
-            nixos_nix = "allow";
-          };
+          # permission = {
+          #   "*" = "ask";
+          #   read = {
+          #     "*" = "allow";
+          #     "*.env*" = "deny";
+          #   };
+          #   edit = "allow";
+          #   glob = "allow";
+          #   grep = "allow";
+          #   list = "allow";
+          #   bash = {
+          #     "*" = "ask";
+          #     op = "deny";
+          #   };
+          #   todoread = "allow";
+          #   todowrite = "allow";
+          #   external_directory = "deny";
+          #   doom_loop = "deny";
+          #   nixos_nix = "allow";
+          # };
 
           plugin =
             let
