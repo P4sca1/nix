@@ -15,6 +15,7 @@
       inputs.nur.modules.nixos.default
       self.nixosModules.sops
       self.nixosModules.hermes-agent
+      self.nixosModules.waydroid
     ];
   };
 
@@ -198,6 +199,7 @@
         builtins.elem (pkgs.lib.getName pkg) [
           "1password"
           "1password-cli"
+          "goland"
           "github-copilot-cli"
           "nvidia-kernel-modules"
           "nvidia-settings"
@@ -220,6 +222,7 @@
         ddcutil
         ddcui
         inputs.self.packages.${pkgs.stdenv.system}.docker-sbx
+        jetbrains.goland
         lutris
         mangohud
         pciutils
