@@ -273,8 +273,22 @@
       services.flatpak = {
         enable = true;
         package = pkgs.flatpak;
+        remotes = [
+          # flathub must stay declared: nix-flatpak removes any remote not listed here
+          {
+            name = "flathub";
+            location = "https://dl.flathub.org/repo/";
+          }
+          # official NVIDIA GeForce NOW repository (https://www.nvidia.com/en-us/geforce-now/download/)
+          # point at the .flatpakrepo file so flatpak imports its GPG key (plain repo URL fails signature checks)
+          {
+            name = "GeForceNOW";
+            location = "https://international.download.nvidia.com/GFNLinux/flatpak/geforcenow.flatpakrepo";
+          }
+        ];
         packages = [
           "com.teamspeak.TeamSpeak3"
+          { appId = "com.nvidia.geforcenow"; origin = "GeForceNOW"; }
         ];
         # keep runtimes/GL extensions (incl. NVIDIA) in sync with the host driver on rebuild
         update.onActivation = true;
