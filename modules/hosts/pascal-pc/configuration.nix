@@ -221,6 +221,7 @@
       environment.systemPackages = with pkgs; [
         ddcutil
         ddcui
+        dig
         inputs.self.packages.${pkgs.stdenv.system}.docker-sbx
         jetbrains.goland
         lutris
