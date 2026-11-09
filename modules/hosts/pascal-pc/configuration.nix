@@ -14,7 +14,6 @@
       inputs.nix-flatpak.nixosModules.nix-flatpak
       inputs.nur.modules.nixos.default
       self.nixosModules.sops
-      self.nixosModules.hermes-agent
       self.nixosModules.waydroid
     ];
   };
@@ -22,7 +21,29 @@
   flake.nixosModules.pascal-pc =
     { pkgs, ... }:
     let
-      pkgsUnstable = import inputs.nixpkgs-unstable { system = pkgs.stdenv.hostPlatform.system; };
+      # Shared unfree whitelist for the stable and unstable nixpkgs instances.
+      allowUnfreePredicate =
+        pkg:
+        builtins.elem (pkgs.lib.getName pkg) [
+          "1password"
+          "1password-cli"
+          "goland"
+          "github-copilot-cli"
+          "nvidia-kernel-modules"
+          "nvidia-settings"
+          "nvidia-x11"
+          "onepassword-password-manager" # firefox extension
+          "steam"
+          "steam-unwrapped"
+          "tableplus"
+          "uhk-agent"
+          "uhk-udev-rules"
+        ];
+
+      pkgsUnstable = import inputs.nixpkgs-unstable {
+        system = pkgs.stdenv.hostPlatform.system;
+        config.allowUnfreePredicate = allowUnfreePredicate;
+      };
     in
     {
       # Bootloader.
@@ -30,7 +51,7 @@
       boot.loader.efi.canTouchEfiVariables = true;
 
       # Use latest kernel.
-      boot.kernelPackages = pkgs.linuxPackages_latest;
+      boot.kernelPackages = pkgsUnstable.linuxPackages_latest;
 
       boot.kernelModules = [
         # ntsync is a kernel driver that mimics Windows synchronization mechanisms, significantly improving performance
@@ -193,23 +214,7 @@
       };
 
       # Allow unfree packages
-      nixpkgs.config.allowUnfreePredicate =
-        pkg:
-        builtins.elem (pkgs.lib.getName pkg) [
-          "1password"
-          "1password-cli"
-          "goland"
-          "github-copilot-cli"
-          "nvidia-kernel-modules"
-          "nvidia-settings"
-          "nvidia-x11"
-          "onepassword-password-manager" # firefox extension
-          "steam"
-          "steam-unwrapped"
-          "tableplus"
-          "uhk-agent"
-          "uhk-udev-rules"
-        ];
+      nixpkgs.config.allowUnfreePredicate = allowUnfreePredicate;
 
       nixpkgs.config.permittedInsecurePackages = [
         "qtwebengine-5.15.19" # used by TeamSpeak 3 client
