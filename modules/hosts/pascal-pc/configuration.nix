@@ -62,6 +62,9 @@
       networking.hostName = "pascal-pc";
       networking.wireless.enable = true;
       networking.networkmanager.enable = true;
+      # Wi-Fi power save causes 100-400ms latency spikes and packet loss on the
+      # Intel AX200, on both 2.4 GHz and 5 GHz. Keep the radio always awake.
+      networking.networkmanager.wifi.powersave = false;
       networking.nftables.enable = true;
 
       # Configure DNS
