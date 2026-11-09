@@ -113,6 +113,7 @@
       home.sessionPath = [
         # Ensure all editor tooling is in PATH, so that vscodium can access language servers and other tooling.
         "${editorDeps}/bin"
+        "${config.home.homeDirectory}/.local/bin"
       ];
 
       home.sessionVariables = {
@@ -782,10 +783,41 @@
             "*.ips-hosting.com" = {
               User = "ips-hosting";
             };
+            "pandora" = {
+              User = "root";
+              Hostname = "85.10.204.26";
+            };
             "z-dev" = {
               User = "ubuntu";
               Hostname = "168.119.73.177";
               Port = 2221;
+              LocalForward = [
+                {
+                  bind.port = 30080;
+                  host.address = "localhost";
+                  host.port = 30080;
+                }
+                {
+                  bind.port = 32080;
+                  host.address = "localhost";
+                  host.port = 32080;
+                }
+                {
+                  bind.port = 32443;
+                  host.address = "localhost";
+                  host.port = 32443;
+                }
+                {
+                  bind.port = 4711;
+                  host.address = "localhost";
+                  host.port = 4711;
+                }
+              ];
+            };
+            "z-dev-pandora" = {
+              User = "ubuntu";
+              Hostname = "10.5.199.193";
+              Port = 22;
               LocalForward = [
                 {
                   bind.port = 30080;
