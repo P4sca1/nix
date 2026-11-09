@@ -14,7 +14,6 @@
           allowUnfreePredicate =
             pkg:
             builtins.elem (pkgs.lib.getName pkg) [
-              "docker-sbx"
               "github-copilot-cli"
               "slack"
               "onepassword-password-manager" # firefox extension

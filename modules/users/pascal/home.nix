@@ -103,9 +103,8 @@
             ]
           );
           darwinArmPackages = lib.optionals (pkgs.stdenv.system == "aarch64-darwin") (
-            with pkgs;
+            # with pkgs;
             [
-              docker-sbx
             ]
           );
         in

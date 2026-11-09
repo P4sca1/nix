@@ -108,7 +108,6 @@
           "gamemode" # https://wiki.nixos.org/wiki/GameMode
           "i2c" # https://www.ddcutil.com/i2c_permissions_using_group_i2c/
           "input"
-          "kvm" # required by docker-sbx for VM sandboxing
           "docker" # allow access to docker daemon
         ];
         shell = pkgs.zsh;
@@ -222,7 +221,6 @@
         ddcutil
         ddcui
         dig
-        inputs.self.packages.${pkgs.stdenv.system}.docker-sbx
         jetbrains.goland
         lutris
         mangohud
