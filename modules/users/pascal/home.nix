@@ -729,7 +729,7 @@
         package = pkgsUnstable.opencode;
         settings = {
           # Add the procyde provider.
-          provider = {
+          providers = {
             procyde = {
               npm = "@ai-sdk/openai-compatible";
               name = "Procyde Intelligent Assistant";
@@ -762,28 +762,6 @@
 
           # Do not allow to share conversations externally, as they may contain sensitive information
           share = "disabled";
-
-          # Configure default permissions for OpenCode
-          # permission = {
-          #   "*" = "ask";
-          #   read = {
-          #     "*" = "allow";
-          #     "*.env*" = "deny";
-          #   };
-          #   edit = "allow";
-          #   glob = "allow";
-          #   grep = "allow";
-          #   list = "allow";
-          #   bash = {
-          #     "*" = "ask";
-          #     op = "deny";
-          #   };
-          #   todoread = "allow";
-          #   todowrite = "allow";
-          #   external_directory = "deny";
-          #   doom_loop = "deny";
-          #   nixos_nix = "allow";
-          # };
 
           plugin =
             let
