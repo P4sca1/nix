@@ -731,27 +731,17 @@
           # Add the procyde provider.
           providers = {
             procyde = {
-              npm = "@ai-sdk/openai-compatible";
               name = "Procyde Intelligent Assistant";
-              options = {
+              "package" = "@opencode/ai/providers/openai-compatible";
+              env = [
+                "PIA_API_KEY"
+              ];
+              settings = {
                 baseURL = "https://pia.procyde.online/v1";
-                apiKey = "{env:PIA_API_KEY}";
               };
               models = {
                 "PIA-1" = {
                   name = "PIA-1";
-                  reasoning = true;
-                  interleaved = {
-                    field = "reasoning_content";
-                  };
-                  variants = {
-                    low = {
-                      reasoningEffort = "low";
-                    };
-                    high = {
-                      reasoningEffort = "high";
-                    };
-                  };
                 };
               };
             };
@@ -762,26 +752,6 @@
 
           # Do not allow to share conversations externally, as they may contain sensitive information
           share = "disabled";
-
-          plugin =
-            let
-              ponytail = pkgs.fetchFromGitHub {
-                owner = "DietrichGebert";
-                repo = "ponytail";
-                rev = "v4.9.0";
-                sha256 = "sha256-8cYggVltBAlZ/Zj4pl1bOu7mQdZFXCmDGW4RSpvRA+w=";
-              };
-              superpowers = pkgs.fetchFromGitHub {
-                owner = "obra";
-                repo = "superpowers";
-                rev = "v6.2.0";
-                sha256 = "sha256-F5LEk0yNWbMpan1vZSFZM76XSpsFGvA7h8q6Idrvenk=";
-              };
-            in
-            [
-              "${ponytail}/.opencode/plugins/ponytail.mjs"
-              "${superpowers}/.opencode/plugins/superpowers.js"
-            ];
         };
       };
 
