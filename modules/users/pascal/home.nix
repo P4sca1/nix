@@ -815,7 +815,7 @@
               ];
             };
             "z-dev-pandora" = {
-              User = "ubuntu";
+              User = "pascal";
               Hostname = "10.5.199.193";
               Port = 22;
               LocalForward = [
