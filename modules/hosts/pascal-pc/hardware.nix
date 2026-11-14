@@ -60,7 +60,7 @@
         modesetting.enable = true;
         powerManagement.enable = true;
         open = false; # Use unfree kernel driver for improved game support;
-        package = config.boot.kernelPackages.nvidiaPackages.bleeding_edge;
+        package = config.boot.kernelPackages.nvidiaPackages.production;
       };
       services.xserver.videoDrivers = [ "nvidia" ];
 
