@@ -67,6 +67,12 @@
       hardware.enableRedistributableFirmware = true; # required for Intel Wifi drivers
       hardware.uinput.enable = true;
       hardware.bluetooth.enable = true;
+      # Workaround for the DualShock 4 / classic-HID bonding bug (see
+      # docs/bluetooth-gamepad-pairing.md and bluez issue #642): BlueZ
+      # otherwise rejects HID connections from not-yet-bonded devices
+      # ("Rejected connection from !bonded device"), which makes DS4
+      # pairing/connecting loop forever.
+      hardware.bluetooth.input.General.ClassicBondedOnly = false;
       hardware.xpadneo.enable = true;
       hardware.steam-hardware.enable = true;
       hardware.keyboard.uhk.enable = true;
