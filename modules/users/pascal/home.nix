@@ -460,6 +460,12 @@
 
               # UI annoyances
               "browser.startup.homepage" = "about:home";
+
+              # Always restore the previous session without showing the
+              # "restore session / new session" crash-recovery prompt.
+              "browser.startup.page" = 3; # restore previous session on startup
+              "browser.sessionstore.resume_from_crash" = false;
+
               "browser.aboutConfig.showWarning" = false;
               "browser.profiles.enabled" = false;
             };
