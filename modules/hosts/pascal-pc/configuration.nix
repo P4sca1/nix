@@ -53,6 +53,37 @@
       # Use latest kernel.
       boot.kernelPackages = pkgsUnstable.linuxPackages_latest;
 
+      # Jonsbo riser cable: recurring Xid 79 ("GPU has fallen off the bus")
+      # freezes on Linux, across a variety of nvidia driver/kernel combos,
+      # while Windows on the same hardware was stable. The GPU link runs with
+      # clock power management (CLKREQ#) enabled; bundled riser cables often
+      # handle that badly. Disable PCIe ASPM entirely.
+      boot.kernelParams = [ "pcie_aspm=off" ];
+
+      # pcie_aspm=off stops the kernel from managing ASPM but leaves the
+      # BIOS-set ClockPM enable bit (Link Control, CLKREQ# clock gating) in
+      # place - lspci showed "LnkCtl: ... ClockPM+" on this link. Clear it on
+      # both endpoints of the GPU link through the riser; also re-applied
+      # after suspend, since the platform may restore the bit.
+      systemd.services.gpu-link-clockpm-off = {
+        description = "Clear ClockPM (CLKREQ#) on the GPU riser link";
+        wantedBy = [
+          "multi-user.target"
+          "suspend.target"
+        ];
+        after = [
+          "multi-user.target"
+          "suspend.target"
+        ];
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = [
+            "${pkgs.pciutils}/bin/setpci -s 0000:2b:00.0 CAP_EXP+0x10.w=0000:0100"
+            "${pkgs.pciutils}/bin/setpci -s 0000:00:03.1 CAP_EXP+0x10.w=0000:0100"
+          ];
+        };
+      };
+
       boot.kernelModules = [
         # ntsync is a kernel driver that mimics Windows synchronization mechanisms, significantly improving performance
         # for running Windows applications, especially games, through compatibility layers like Wine and Proton

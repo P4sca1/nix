@@ -40,7 +40,13 @@
 
                 sleep 1
 
-                steam steam://open/bigpicture
+                # Route audio to the TV (GPU HDMI sink)
+                TV_SINK=$(wpctl status | awk '/Sinks:/{f=1;next}/Sources:/{f=0}f && /HDMI/ {sub(/^[^0-9]*/,""); split($0,a,"."); print a[1]; exit}')
+                if [ -n "''${TV_SINK:-}" ]; then
+                  wpctl set-default "$TV_SINK"
+                fi
+
+                steam -bigpicture
                 ;;
 
               extended)
@@ -100,6 +106,31 @@
             # Clips window contents to the rounded corner boundaries.
             clip-to-geometry = true;
           };
+
+          window-rules = [
+            {
+              # Big Picture Mode opens fullscreen on the TV.
+              matches = [
+                {
+                  title = _: {
+                    custom = ''r#"Steam Big Picture Mode"#'';
+                  };
+                }
+              ];
+              open-fullscreen = true;
+            }
+            {
+              # Steam games (app-id steam_app_<id>) open fullscreen.
+              matches = [
+                {
+                  app-id = _: {
+                    custom = ''r#"^steam_app_[0-9]+$"#'';
+                  };
+                }
+              ];
+              open-fullscreen = true;
+            }
+          ];
 
           cursor = {
             hide-when-typing = false;
