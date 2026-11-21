@@ -170,7 +170,6 @@
           "gamemode" # https://wiki.nixos.org/wiki/GameMode
           "i2c" # https://www.ddcutil.com/i2c_permissions_using_group_i2c/
           "input"
-          "docker" # allow access to docker daemon
         ];
         shell = pkgs.zsh;
         home = "/home/pascal";
@@ -302,6 +301,7 @@
         pulseaudio # Steam requires pactl
         tableplus
         uhk-agent
+        docker-compose # compose provider for podman (`podman compose`)
         vulkan-tools
         inputs.sidra.packages.${pkgs.stdenv.system}.sidra
         inputs.claude-desktop.packages.${pkgs.stdenv.system}.default
@@ -374,7 +374,12 @@
       # Open ports in the firewall.
       networking.firewall.enable = true;
 
-      virtualisation.podman.enable = true;
+      virtualisation.podman = {
+        enable = true;
+        # Provide a `docker` command that translates to podman, so
+        # `docker ps`, `docker build`, `docker compose` etc. work unchanged.
+        dockerCompat = true;
+      };
 
       # This value determines the NixOS release from which the default
       # settings for stateful data, like file locations and database versions
