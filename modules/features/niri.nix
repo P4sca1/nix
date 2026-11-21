@@ -40,13 +40,28 @@
 
                 sleep 1
 
-                # Route audio to the TV (GPU HDMI sink)
-                TV_SINK=$(wpctl status | awk '/Sinks:/{f=1;next}/Sources:/{f=0}f && /HDMI/ {sub(/^[^0-9]*/,""); split($0,a,"."); print a[1]; exit}')
+                # Route audio to the TV (GPU HDMI sink). Match German and
+                # English section headers so this works regardless of locale.
+                TV_SINK=$(wpctl status | awk '/Sinks|Senken/{f=1;next}/Sources|Quellen/{f=0}f && /HDMI/ {sub(/^[^0-9]*/,""); split($0,a,"."); print a[1]; exit}')
                 if [ -n "''${TV_SINK:-}" ]; then
                   wpctl set-default "$TV_SINK"
                 fi
 
-                steam -bigpicture
+                steam steam://open/bigpicture
+
+                # The Big Picture window opens with the title "Steam" and is
+                # only renamed to "Steam Big Picture Mode" later, so
+                # open-fullscreen window rules never match it. Wait for it and
+                # fullscreen it explicitly instead.
+                BP_ID=""
+                for _ in $(seq 1 60); do
+                  BP_ID=$(niri msg --json windows 2>/dev/null | jq -r '[.[] | select(.title | test("Big Picture Mode"))][0].id // empty')
+                  if [ -n "$BP_ID" ]; then
+                    niri msg action fullscreen-window --id "$BP_ID"
+                    break
+                  fi
+                  sleep 0.5
+                done
                 ;;
 
               extended)
@@ -108,17 +123,6 @@
           };
 
           window-rules = [
-            {
-              # Big Picture Mode opens fullscreen on the TV.
-              matches = [
-                {
-                  title = _: {
-                    custom = ''r#"Steam Big Picture Mode"#'';
-                  };
-                }
-              ];
-              open-fullscreen = true;
-            }
             {
               # Steam games (app-id steam_app_<id>) open fullscreen.
               matches = [
