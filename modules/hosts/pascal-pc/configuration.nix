@@ -170,6 +170,7 @@
           "gamemode" # https://wiki.nixos.org/wiki/GameMode
           "i2c" # https://www.ddcutil.com/i2c_permissions_using_group_i2c/
           "input"
+          "podman" # access to the rootful podman API socket (/run/docker.sock)
         ];
         shell = pkgs.zsh;
         home = "/home/pascal";
