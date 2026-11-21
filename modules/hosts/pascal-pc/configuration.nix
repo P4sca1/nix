@@ -58,7 +58,14 @@
       # while Windows on the same hardware was stable. The GPU link runs with
       # clock power management (CLKREQ#) enabled; bundled riser cables often
       # handle that badly. Disable PCIe ASPM entirely.
-      boot.kernelParams = [ "pcie_aspm=off" ];
+      boot.kernelParams = [
+        "pcie_aspm=off"
+        # Keep the TV (HDMI) disabled until something explicitly enables it,
+        # so SDDM shows the login screen on the desktop monitor even though
+        # the TV is connected (but in standby). niri can still enable the
+        # output later, e.g. via `display-mode tv-gaming`.
+        "video=HDMI-A-1:d"
+      ];
 
       # pcie_aspm=off stops the kernel from managing ASPM but leaves the
       # BIOS-set ClockPM enable bit (Link Control, CLKREQ# clock gating) in
@@ -233,6 +240,34 @@
       };
 
       programs.gamemode.enable = true;
+
+      # Secret Service provider. Claude Desktop (and other Electron apps) use
+      # it to store login tokens, SSH passphrases and extension secrets.
+      services.gnome.gnome-keyring.enable = true;
+      # Unlock the keyring automatically with the login password.
+      security.pam.services.sddm.enableGnomeKeyring = true;
+
+      # Claude Desktop downloads dynamically linked binaries (e.g. the Claude
+      # Code CLI) at runtime and execs them from ~/.config. nix-ld provides
+      # the standard Linux loader + libraries so they can run on NixOS.
+      programs.nix-ld = {
+        enable = true;
+        libraries = with pkgs; [
+          stdenv.cc.cc
+          glib
+          nss
+          nspr
+          zlib
+          openssl
+          curl
+          expat
+          icu
+          xz
+          libxml2
+          sqlite
+          libgit2
+        ];
+      };
 
       programs._1password = {
         enable = true;

@@ -88,6 +88,22 @@
 
       # https://docs.noctalia.dev/v4/getting-started/nixos/
       security.polkit.enable = true;
+
+      # Niri doesn't ship a polkit authentication agent; without one, apps like
+      # 1Password report that system authentication (unlock with system
+      # credentials) is "not supported in this environment".
+      systemd.user.services.polkit-gnome-authentication-agent-1 = {
+        description = "polkit-gnome Authentication Agent";
+        wantedBy = [ "graphical-session.target" ];
+        wants = [ "graphical-session.target" ];
+        after = [ "graphical-session.target" ];
+        serviceConfig = {
+          ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+          Restart = "on-failure";
+          RestartSec = 1;
+          TimeoutStopSec = 10;
+        };
+      };
       services.power-profiles-daemon.enable = true;
       services.upower.enable = true;
 
@@ -135,6 +151,14 @@
               open-fullscreen = true;
             }
           ];
+
+          # Honor xdg-activation requests even with invalid serials, so
+          # single-instance apps (browser opened via a link, launcher opening
+          # an already-running app) raise and focus their existing window
+          # instead of only being marked urgent.
+          debug = {
+            honor-xdg-activation-with-invalid-serial = true;
+          };
 
           cursor = {
             hide-when-typing = false;
