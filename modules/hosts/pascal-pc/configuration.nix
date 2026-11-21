@@ -379,6 +379,10 @@
         # Provide a `docker` command that translates to podman, so
         # `docker ps`, `docker build`, `docker compose` etc. work unchanged.
         dockerCompat = true;
+        # Expose the podman socket at /var/run/docker.sock, so tools that
+        # expect the Docker socket (Portainer, Watchtower, DOCKER_HOST
+        # clients, ...) work with podman unmodified.
+        dockerSocket.enable = true;
       };
 
       # This value determines the NixOS release from which the default
