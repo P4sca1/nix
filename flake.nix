@@ -76,6 +76,13 @@
       url = "github:ogulcancelik/herdr";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Official Claude Desktop Linux build, repackaged from Anthropic's apt repo
+    # (Anthropic only ships .deb officially; this flake auto-tracks new versions).
+    claude-desktop = {
+      url = "github:tomsch/claude-desktop-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);

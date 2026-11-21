@@ -269,6 +269,7 @@
         uhk-agent
         vulkan-tools
         inputs.sidra.packages.${pkgs.stdenv.system}.sidra
+        inputs.claude-desktop.packages.${pkgs.stdenv.system}.default
       ];
 
       environment.sessionVariables = {

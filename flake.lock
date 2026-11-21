@@ -17,6 +17,26 @@
         "type": "github"
       }
     },
+    "claude-desktop": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1795218045,
+        "narHash": "sha256-bJVPh6BsRl0O6L1WikrcV+cUEgSgbLeIf8y9rg+fHEM=",
+        "owner": "tomsch",
+        "repo": "claude-desktop-nix",
+        "rev": "fbb372bf4a1a0fbdbe73d137b30cb67aef1d7623",
+        "type": "github"
+      },
+      "original": {
+        "owner": "tomsch",
+        "repo": "claude-desktop-nix",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": "nixpkgs-lib"
@@ -322,6 +342,7 @@
     },
     "root": {
       "inputs": {
+        "claude-desktop": "claude-desktop",
         "flake-parts": "flake-parts",
         "herdr": "herdr",
         "home-manager": "home-manager",

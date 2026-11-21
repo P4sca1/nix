@@ -182,7 +182,11 @@
             "Mod+Comma".spawn-sh = "${lib.getExe self'.packages.noctalia} ipc call settings toggle";
             "Mod+Q".close-window = { };
             "Mod+Shift+Slash".show-hotkey-overlay = { };
-            "Shift+Mod+Space".spawn-sh = "1password --quick-access";
+            # 1Password Quick Access, matching the new macOS default
+            # (Option+Cmd+Backslash, changed due to a conflict with macOS
+            # Golden Gate's Visual Intelligence / Siri shortcut).
+            # macOS Option -> Alt (Mod), Command -> Ctrl on Linux.
+            "Mod+Control+Backslash".spawn-sh = "1password --quick-access";
 
             # Screenshots
             "Print".screenshot = { };
