@@ -27,16 +27,69 @@
 
             TV="HDMI-A-1"
             DESKTOP="DP-1"
+            # Seconds to wait for the TV to show up before giving up.
+            TV_TIMEOUT=10
+
+            notify() {
+              echo "display-mode: $*" >&2
+              ${pkgs.libnotify}/bin/notify-send -a display-mode "display-mode" "$*" 2>/dev/null || true
+            }
+
+            # The kernel cmdline keeps the TV connector forced off
+            # (video=HDMI-A-1:d) so SDDM stays on the monitor. A forced-off
+            # connector always reports "disconnected", so niri can never
+            # enable it. Writing "detect"/"off" to the DRM status attribute
+            # lifts/restores that force (write access via udev rule).
+            tv_force() {
+              local f
+              for f in /sys/class/drm/card*-"$TV"/status; do
+                if [ -w "$f" ]; then echo "$1" > "$f" || true; fi
+              done
+            }
+
+            # niri only lists connected outputs in its JSON.
+            tv_connected() {
+              niri msg --json outputs | jq -e --arg tv "$TV" 'has($tv)' >/dev/null
+            }
+
+            tv_active() {
+              niri msg --json outputs | jq -e --arg tv "$TV" '.[$tv].current_mode != null' >/dev/null
+            }
 
             case "''${1:-}" in
               desktop)
-                niri msg output "$TV" off
+                # Monitor first, so there is never a moment without picture.
                 niri msg output "$DESKTOP" on
+                niri msg output "$TV" off
+                tv_force off
                 ;;
 
               tv-gaming)
-                niri msg output "$DESKTOP" off
+                tv_force detect
+                for _ in $(seq 1 "$TV_TIMEOUT"); do
+                  tv_connected && break
+                  sleep 1
+                done
+                if ! tv_connected; then
+                  notify "TV ($TV) not connected - switched on, right input? Staying on $DESKTOP."
+                  tv_force off
+                  exit 1
+                fi
+
+                # Enable the TV first; turn the monitor off only once the TV
+                # actually has a mode, otherwise roll back.
                 niri msg output "$TV" on
+                for _ in $(seq 1 5); do
+                  tv_active && break
+                  sleep 1
+                done
+                if ! tv_active; then
+                  notify "TV ($TV) did not come up. Staying on $DESKTOP."
+                  niri msg output "$TV" off
+                  tv_force off
+                  exit 1
+                fi
+                niri msg output "$DESKTOP" off
 
                 sleep 1
 
@@ -66,6 +119,9 @@
 
               extended)
                 niri msg output "$DESKTOP" on
+                tv_force detect
+                sleep 2
+                tv_connected || notify "TV ($TV) not connected."
                 niri msg output "$TV" on
                 ;;
 

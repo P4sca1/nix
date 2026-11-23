@@ -62,10 +62,18 @@
         "pcie_aspm=off"
         # Keep the TV (HDMI) disabled until something explicitly enables it,
         # so SDDM shows the login screen on the desktop monitor even though
-        # the TV is connected (but in standby). niri can still enable the
-        # output later, e.g. via `display-mode tv-gaming`.
+        # the TV is connected (but in standby). This forces the connector to
+        # report "disconnected", so niri alone can NOT enable it later:
+        # `display-mode` first lifts the force by writing "detect" to
+        # /sys/class/drm/card*-HDMI-A-1/status (see udev rule below).
         "video=HDMI-A-1:d"
       ];
+
+      # Let the video group lift/restore the forced-off state of the TV
+      # connector (used by `display-mode`).
+      services.udev.extraRules = ''
+        ACTION=="add|change", SUBSYSTEM=="drm", KERNEL=="card*-HDMI-A-1", RUN+="${pkgs.coreutils}/bin/chgrp video /sys%p/status", RUN+="${pkgs.coreutils}/bin/chmod g+w /sys%p/status"
+      '';
 
       # pcie_aspm=off stops the kernel from managing ASPM but leaves the
       # BIOS-set ClockPM enable bit (Link Control, CLKREQ# clock gating) in
@@ -170,6 +178,7 @@
           "gamemode" # https://wiki.nixos.org/wiki/GameMode
           "i2c" # https://www.ddcutil.com/i2c_permissions_using_group_i2c/
           "input"
+          "video" # write /sys/class/drm/*-HDMI-A-1/status (display-mode)
         ];
         shell = pkgs.zsh;
         home = "/home/pascal";
