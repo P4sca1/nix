@@ -103,12 +103,12 @@
                 steam steam://open/bigpicture
 
                 # The Big Picture window opens with the title "Steam" and is
-                # only renamed to "Steam Big Picture Mode" later, so
+                # only renamed to "Steam Big Picture Mode" (German: "Big-Picture-Modus") later, so
                 # open-fullscreen window rules never match it. Wait for it and
                 # fullscreen it explicitly instead.
                 BP_ID=""
                 for _ in $(seq 1 60); do
-                  BP_ID=$(niri msg --json windows 2>/dev/null | jq -r '[.[] | select(.title | test("Big Picture Mode"))][0].id // empty')
+                  BP_ID=$(niri msg --json windows 2>/dev/null | jq -r '[.[] | select(.title | test("Big.Picture"))][0].id // empty')
                   if [ -n "$BP_ID" ]; then
                     niri msg action fullscreen-window --id "$BP_ID"
                     break
