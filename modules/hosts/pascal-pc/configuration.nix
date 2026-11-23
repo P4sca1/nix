@@ -49,6 +49,10 @@
       # Bootloader.
       boot.loader.systemd-boot.enable = true;
       boot.loader.efi.canTouchEfiVariables = true;
+      # EFI shell in the boot menu, needed once to find the device handle of
+      # the Windows ESP on the Samsung 870 QVO (`map -c`), see
+      # boot.loader.systemd-boot.windows.
+      boot.loader.systemd-boot.edk2-uefi-shell.enable = true;
 
       # Use latest kernel.
       boot.kernelPackages = pkgsUnstable.linuxPackages_latest;

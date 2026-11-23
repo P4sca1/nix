@@ -39,6 +39,23 @@
         fsType = "ext4";
       };
 
+      # Windows (Samsung 870 QVO). ntfs-3g instead of the in-kernel ntfs3,
+      # which refuses this volume ("Can't open blockdev"). If Windows was
+      # hibernated / fast-started, ntfs-3g falls back to read-only.
+      # nofail: never block NixOS boot on this disk.
+      fileSystems."/windows" = {
+        device = "/dev/disk/by-uuid/F22A5B9F2A5B5FA1";
+        fsType = "ntfs-3g";
+        noCheck = true; # there is no fsck for NTFS on Linux
+        options = [
+          "uid=1000"
+          "gid=100"
+          "windows_names"
+          "nofail"
+          "x-systemd.device-timeout=10s"
+        ];
+      };
+
       swapDevices = [
         { device = "/dev/disk/by-uuid/6ee56abd-707f-45d0-9b85-c28d7603c023"; }
       ];
