@@ -317,7 +317,30 @@
         docker-compose # compose provider for podman (`podman compose`)
         vulkan-tools
         inputs.sidra.packages.${pkgs.stdenv.system}.sidra
-        inputs.claude-desktop.packages.${pkgs.stdenv.system}.default
+        # Electron only picks the libsecret backend for desktops it knows
+        # (GNOME, KDE, ...). Under niri it falls back to "basic_text", which
+        # Claude treats as "safeStorage not available" and keeps the login
+        # token in memory only -> re-login after every reboot. Force libsecret.
+        (
+          let
+            claude = inputs.claude-desktop.packages.${pkgs.stdenv.system}.default;
+          in
+          pkgs.symlinkJoin {
+            name = "claude-desktop-libsecret";
+            paths = [ claude ];
+            nativeBuildInputs = [ pkgs.makeWrapper ];
+            postBuild = ''
+              wrapProgram $out/bin/claude-desktop \
+                --add-flags "--password-store=gnome-libsecret"
+              # .desktop files reference the unwrapped binary by store path.
+              for f in $out/share/applications/*.desktop; do
+                target=$(readlink -f "$f")
+                rm "$f"
+                sed "s|${claude}/bin/claude-desktop|$out/bin/claude-desktop|g" "$target" > "$f"
+              done
+            '';
+          }
+        )
       ];
 
       environment.sessionVariables = {
