@@ -320,7 +320,9 @@
         # Electron only picks the libsecret backend for desktops it knows
         # (GNOME, KDE, ...). Under niri it falls back to "basic_text", which
         # Claude treats as "safeStorage not available" and keeps the login
-        # token in memory only -> re-login after every reboot. Force libsecret.
+        # token in memory only -> re-login after every reboot. Force libsecret,
+        # and put libsecret on the library path: Electron dlopen()s it and the
+        # package's RPATH doesn't include it.
         (
           let
             claude = inputs.claude-desktop.packages.${pkgs.stdenv.system}.default;
@@ -331,7 +333,8 @@
             nativeBuildInputs = [ pkgs.makeWrapper ];
             postBuild = ''
               wrapProgram $out/bin/claude-desktop \
-                --add-flags "--password-store=gnome-libsecret"
+                --add-flags "--password-store=gnome-libsecret" \
+                --prefix LD_LIBRARY_PATH : ${pkgs.lib.makeLibraryPath [ pkgs.libsecret ]}
               # .desktop files reference the unwrapped binary by store path.
               for f in $out/share/applications/*.desktop; do
                 target=$(readlink -f "$f")
