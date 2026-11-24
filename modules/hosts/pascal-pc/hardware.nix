@@ -71,7 +71,10 @@
       hardware.nvidia = {
         modesetting.enable = true;
         powerManagement.enable = true;
-        open = false; # Use unfree kernel driver for improved game support;
+        # Open kernel module: NVIDIA's recommended default for Turing+ (incl. Ada),
+        # same userspace driver, so no gaming difference. Testing whether it
+        # changes the recurring Xid 79 behaviour.
+        open = true;
         package = config.boot.kernelPackages.nvidiaPackages.production;
       };
       services.xserver.videoDrivers = [ "nvidia" ];
