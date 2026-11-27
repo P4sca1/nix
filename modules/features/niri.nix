@@ -56,12 +56,51 @@
               niri msg --json outputs | jq -e --arg tv "$TV" '.[$tv].current_mode != null' >/dev/null
             }
 
+            PACTL="${pkgs.pulseaudio}/bin/pactl"
+            # Default sink before tv-gaming, restored by `desktop`.
+            SINK_STATE="''${XDG_RUNTIME_DIR:-/tmp}/display-mode.sink"
+
+            # The GPU's HDMI/DP audio card has one profile per connector and
+            # only one can be active. WirePlumber keeps the one it picked at
+            # login (the monitor's DP audio) when the TV shows up, so the
+            # "HDMI" sink kept pointing at the monitor until pipewire was
+            # restarted. Find the card port whose ELD names the TV (same
+            # model name niri reports) and activate that profile explicitly.
+            tv_audio() {
+              local model="" sel="" card profile sink
+              model=$(niri msg --json outputs | jq -r --arg tv "$TV" '.[$tv].model // empty')
+              [ -n "$model" ] || return 1
+              for _ in $(seq 1 10); do
+                sel=$(LC_ALL=C "$PACTL" --format=json list cards 2>/dev/null | jq -r --arg m "$model" '
+                  def norm: ascii_downcase | gsub("^\\s+|\\s+$"; "");
+                  [.[] as $c | $c.ports | to_entries[]
+                   | select((.value.properties["device.product.name"] // "" | norm) == ($m | norm))
+                   | "\($c.name) \(.value.profiles[0])"][0] // empty')
+                [ -n "$sel" ] && break
+                sleep 1
+              done
+              [ -n "$sel" ] || return 1
+              card=''${sel% *}
+              profile=''${sel#* }
+              "$PACTL" set-card-profile "$card" "$profile"
+              sink="alsa_output.''${card#alsa_card.}.''${profile#output:}"
+              for _ in $(seq 1 10); do
+                if "$PACTL" set-default-sink "$sink" 2>/dev/null; then return 0; fi
+                sleep 0.5
+              done
+              return 1
+            }
+
             case "''${1:-}" in
               desktop)
                 # Monitor first, so there is never a moment without picture.
                 niri msg output "$DESKTOP" on
                 niri msg output "$TV" off
                 tv_force off
+                if [ -s "$SINK_STATE" ]; then
+                  "$PACTL" set-default-sink "$(cat "$SINK_STATE")" || true
+                  rm -f "$SINK_STATE"
+                fi
                 ;;
 
               tv-gaming)
@@ -93,28 +132,46 @@
 
                 sleep 1
 
-                # Route audio to the TV (GPU HDMI sink). Match German and
-                # English section headers so this works regardless of locale.
-                TV_SINK=$(wpctl status | awk '/Sinks|Senken/{f=1;next}/Sources|Quellen/{f=0}f && /HDMI/ {sub(/^[^0-9]*/,""); split($0,a,"."); print a[1]; exit}')
-                if [ -n "''${TV_SINK:-}" ]; then
-                  wpctl set-default "$TV_SINK"
+                # Route audio to the TV.
+                [ -s "$SINK_STATE" ] || "$PACTL" get-default-sink > "$SINK_STATE" 2>/dev/null || true
+                if ! tv_audio; then
+                  # Last resort, the same thing that helped manually.
+                  systemctl --user restart wireplumber || true
+                  sleep 3
+                  tv_audio || notify "No audio sink for the TV found - audio stays on $("$PACTL" get-default-sink 2>/dev/null)."
                 fi
 
                 steam steam://open/bigpicture
 
                 # The Big Picture window opens with the title "Steam" and is
-                # only renamed to "Steam Big Picture Mode" (German: "Big-Picture-Modus") later, so
-                # open-fullscreen window rules never match it. Wait for it and
-                # fullscreen it explicitly instead.
-                BP_ID=""
-                for _ in $(seq 1 60); do
-                  BP_ID=$(niri msg --json windows 2>/dev/null | jq -r '[.[] | select(.title | test("Big.Picture"))][0].id // empty')
-                  if [ -n "$BP_ID" ]; then
-                    niri msg action fullscreen-window --id "$BP_ID"
-                    break
+                # only renamed to "Steam Big Picture Mode" (German:
+                # "Big-Picture-Modus") later, so open-fullscreen window rules
+                # never match it. A cold Steam start (updates, login) easily
+                # takes longer than 30 s, so wait up to 2 min, then fullscreen
+                # it. fullscreen-window toggles and niri's JSON has no
+                # fullscreen flag, so judge by size: only toggle while the
+                # window is smaller than the TV, and stop once it stays at
+                # least TV-sized for a few seconds.
+                read -r TV_W TV_H < <(niri msg --json outputs | jq -r --arg tv "$TV" '.[$tv].logical | "\(.width) \(.height)"')
+                stable=0
+                toggles=0
+                for _ in $(seq 1 120); do
+                  read -r BP_ID BP_W BP_H < <(niri msg --json windows 2>/dev/null | jq -r '
+                    [.[] | select(.title | test("Big.Picture"))][0]
+                    | if . then "\(.id) \(.layout.window_size[0]) \(.layout.window_size[1])" else "" end') || true
+                  if [ -n "''${BP_ID:-}" ]; then
+                    if [ "$BP_W" -ge "$TV_W" ] && [ "$BP_H" -ge "$TV_H" ]; then
+                      stable=$((stable + 1))
+                      [ "$stable" -ge 3 ] && break
+                    elif [ "$toggles" -lt 3 ]; then
+                      stable=0
+                      toggles=$((toggles + 1))
+                      niri msg action fullscreen-window --id "$BP_ID"
+                    fi
                   fi
-                  sleep 0.5
+                  sleep 1
                 done
+                [ "$stable" -ge 3 ] || notify "Could not put Steam Big Picture into fullscreen."
                 ;;
 
               extended)
