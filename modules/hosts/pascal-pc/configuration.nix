@@ -54,8 +54,10 @@
       # boot.loader.systemd-boot.windows.
       boot.loader.systemd-boot.edk2-uefi-shell.enable = true;
 
-      # Use latest kernel.
-      boot.kernelPackages = pkgsUnstable.linuxPackages_latest;
+      # LTS kernel (6.18) instead of linuxPackages_latest (7.3): testing whether
+      # the GPU HDMI audio "stream 4 dma error" (snd_hda_intel 0000:2b:00.1),
+      # seen only on 7.3.x during TV sessions, is a kernel regression.
+      boot.kernelPackages = pkgsUnstable.linuxPackages;
 
       # Jonsbo riser cable: recurring Xid 79 ("GPU has fallen off the bus")
       # freezes on Linux, across a variety of nvidia driver/kernel combos,
